@@ -178,24 +178,28 @@ public class Motion extends JPanel {
 	
 	/**
 	 * Adds listeners to all text fields
+	 * TODO Fix Legal Tracker w/o hashmaps
 	 */
 	private void suvatListener() {
 		// Start Calculating Once Something is Changed
 		suvat.forEach((k, v) -> {
 			v.getDocument().addDocumentListener(new DocumentListener() {
 				
+				// When something is removed
 				@Override
 				public void removeUpdate(DocumentEvent e) {
 					// Check
 					update();
 				}
 				
+				// When something is inserted
 				@Override
 				public void insertUpdate(DocumentEvent e) {
 					// Check
 					update();
 				}
 				
+				// When something is changed
 				@Override
 				public void changedUpdate(DocumentEvent e) {
 					// Check
@@ -203,24 +207,32 @@ public class Motion extends JPanel {
 				}
 				
 				private boolean first = true,
-								illegal = false;
+								illegal = false,
+								firstIllegal = true,
+								firstLegal = true;
 				
 				/**
 				 * Updates all text fields with the calculated values
 				 */
 				private void update() {
-					// TODO Find Way to Revert Illegality 
 					// If blank, ignore and rest
 					if(v.getText().trim().equals("")) {
+						// Remove Activity
 						active--;
-						illegal = false;
+						System.out.println("Currently Active: " + active);
+						// Indicate First Time
 						first = true;
 						return;
 					// If first time being filled, add to active
 					}else if(first) {
+						// Indicate Activity
 						active++;
+						System.out.println("Currently Active: " + active);
+						// Remove First Title
 						first = false;
 					}
+					// Reset Legality to Check
+					illegal = false;
 					// If contains illegal char, make illegal
 					v.getText().chars().parallel().forEach(c -> {
 						// Accepted Characters
@@ -234,15 +246,31 @@ public class Motion extends JPanel {
 					});
 					// If not legal, change color
 					if(illegal) {
-						setLegal(false);
+						// Checks if first
+						firstLegal = true;
+						if(firstIllegal) {
+							firstIllegal = false;
+							setLegal(false);
+						}
 						v.setForeground(Color.RED);
-					}else
+					}else{
+						// Checks if first
+						firstIllegal = true;
+						if(firstLegal) {
+							firstLegal = false;
+							setLegal(true);
+						}
 						v.setForeground(Color.BLACK);
+					}
 					// Add task to Queue if able
 					if(active >= 3 && !enabled && illegalCount == 0) {
 						enabled = true;
 						Calculator.addTasks(RUN);
+					}else if(active < 3 && enabled && illegalCount != 0) {
+						enabled = false;
+						Calculator.removeTasks(RUN);
 					}
+					System.out.println("Status: " + enabled);
 				}
 			});
 		});
@@ -259,5 +287,6 @@ public class Motion extends JPanel {
 			illegalCount++;
 		else
 			illegalCount--;
+		System.out.println("Current Illegal: " + illegalCount);
 	}
 }

@@ -108,4 +108,14 @@ public class Calculator extends JFrame {
 	public static void addTasks(Runnable run) {
 		TASKS.add(run);
 	}
+	
+	/**
+	 * Removes a pending calculation to the line up of calculations required
+	 * 
+	 * @param run
+	 * The required task to be run
+	 */
+	public static void removeTasks(Runnable run) {
+		TASKS.remove(run);
+	}
 }
