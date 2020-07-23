@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,14 +24,12 @@ public class Motion extends JPanel {
 	
 	// Toggle
 	private boolean enabled = false;
-	private int illegalCount = 0;
-	// Verifies that 3 or more fields are filled
-	private int active = 0;
 	
 	/* Text Fields */
 	
 	/*-SUVAT-*/
 	private HashMap<String, JTextField> suvat = new HashMap<>();
+	private Hashtable<JTextField, Boolean> active = new Hashtable<>();
 
 	/**
 	 * Create the panel.
@@ -152,11 +151,11 @@ public class Motion extends JPanel {
 	private final Runnable RUN = () -> {
 		// Compile a List of Variables
 		HashMap<String, Variable> actVars = new HashMap<>();
-		suvat.values().parallelStream().forEach(v -> {
-			if(!v.getText().equals("")) {
-				System.out.println(v.getName() + " >> " + v.getText());
+		active.forEach((v, b) -> {
+			if(b)
 				actVars.put(v.getName(), new Variable(v.getName(), v.getText()));
-			}
+			else
+				active.replace(v, true);
 		});
 		// Start Calculation
 		// Cal. s
@@ -178,11 +177,14 @@ public class Motion extends JPanel {
 	
 	/**
 	 * Adds listeners to all text fields
-	 * TODO Fix Legal Tracker w/o hashmaps
+	 * TODO Fix One time use
 	 */
 	private void suvatListener() {
 		// Start Calculating Once Something is Changed
 		suvat.forEach((k, v) -> {
+			// Add to Tracker
+			active.put(v, false);
+			// Add Listener
 			v.getDocument().addDocumentListener(new DocumentListener() {
 				
 				// When something is removed
@@ -206,87 +208,48 @@ public class Motion extends JPanel {
 					update();
 				}
 				
-				private boolean first = true,
-								illegal = false,
-								firstIllegal = true,
-								firstLegal = true;
+				private boolean illegal = false;
 				
 				/**
 				 * Updates all text fields with the calculated values
 				 */
 				private void update() {
-					// If blank, ignore and rest
-					if(v.getText().trim().equals("")) {
-						// Remove Activity
-						active--;
-						System.out.println("Currently Active: " + active);
-						// Indicate First Time
-						first = true;
-						return;
-					// If first time being filled, add to active
-					}else if(first) {
-						// Indicate Activity
-						active++;
-						System.out.println("Currently Active: " + active);
-						// Remove First Title
-						first = false;
-					}
-					// Reset Legality to Check
+					// Reset if blank
+					if(v.getText().equals(""))
+						active.replace(v, false);
+					// Check for Illegal Characters
 					illegal = false;
-					// If contains illegal char, make illegal
 					v.getText().chars().parallel().forEach(c -> {
-						// Accepted Characters
-						if(c == 'E' || c == '^' || c == '.' || c == '-')
+						// Pass if accepted characters
+						if(c == 'E' || c == '.' || c == '^' || c== '-')
 							return;
-						// Don't allow letters
-						if(!Character.isDigit(c)) {
+						// Stop if not a digit (illegal)
+						if(!Character.isDigit(c))
 							illegal = true;
-							return;
-						}
 					});
-					// If not legal, change color
+					// Update
 					if(illegal) {
-						// Checks if first
-						firstLegal = true;
-						if(firstIllegal) {
-							firstIllegal = false;
-							setLegal(false);
-						}
+						active.replace(v, false);
 						v.setForeground(Color.RED);
+						return;
 					}else{
-						// Checks if first
-						firstIllegal = true;
-						if(firstLegal) {
-							firstLegal = false;
-							setLegal(true);
-						}
+						active.replace(v, true);
 						v.setForeground(Color.BLACK);
 					}
-					// Add task to Queue if able
-					if(active >= 3 && !enabled && illegalCount == 0) {
-						enabled = true;
-						Calculator.addTasks(RUN);
-					}else if(active < 3 && enabled && illegalCount != 0) {
-						enabled = false;
-						Calculator.removeTasks(RUN);
+					// Check if ready to send to Task Queue or Not
+					if(active.values().parallelStream().filter(bool -> bool).toArray().length >= 3) {
+						if(!enabled) {
+							Calculator.addTasks(RUN);
+							enabled = true;
+						}
+					}else{
+						if(enabled) {
+							Calculator.removeTasks(RUN);
+							enabled = false;
+						}
 					}
-					System.out.println("Status: " + enabled);
 				}
 			});
 		});
-	}
-	
-	/**
-	 * Sets the Panel's Legality
-	 * 
-	 * @param legal
-	 * Is this panel currently legal?
-	 */
-	private synchronized void setLegal(boolean legal) {
-		if(!legal)
-			illegalCount++;
-		else
-			illegalCount--;
-		System.out.println("Current Illegal: " + illegalCount);
 	}
 }
