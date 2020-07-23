@@ -153,9 +153,11 @@ public class Motion extends JPanel {
 		HashMap<String, Variable> actVars = new HashMap<>();
 		active.forEach((v, b) -> {
 			if(b)
-				actVars.put(v.getName(), new Variable(v.getName(), v.getText()));
-			else
-				active.replace(v, true);
+				try {
+					actVars.put(v.getName(), new Variable(v.getName(), v.getText().trim()));
+				}catch(NumberFormatException e) {
+					System.out.println(v.getName() + " Caused a Problem");
+				}
 		});
 		// Start Calculation
 		// Cal. s
@@ -173,11 +175,13 @@ public class Motion extends JPanel {
 		// Cal. t
 		if(!actVars.containsKey("t"))
 			suvat.get("t").setText(MotionEqu.t(actVars).toString());
+		// Reset Enabled
+		enabled = false;
 	};
 	
 	/**
 	 * Adds listeners to all text fields
-	 * TODO Fix One time use
+	 * TODO FIx random nulls
 	 */
 	private void suvatListener() {
 		// Start Calculating Once Something is Changed
@@ -214,14 +218,18 @@ public class Motion extends JPanel {
 				 * Updates all text fields with the calculated values
 				 */
 				private void update() {
+					System.out.println(v.getName() + " contains: <" + v.getText() + ">");
 					// Reset if blank
-					if(v.getText().equals(""))
+					if(v.getText().trim().length() == 0) {
 						active.replace(v, false);
+						trySendTask();
+						return;
+					}
 					// Check for Illegal Characters
 					illegal = false;
 					v.getText().chars().parallel().forEach(c -> {
 						// Pass if accepted characters
-						if(c == 'E' || c == '.' || c == '^' || c== '-')
+						if(c == 'E' || c == 'e' || c == '.' || c == '^' || c== '-')
 							return;
 						// Stop if not a digit (illegal)
 						if(!Character.isDigit(c))
@@ -236,20 +244,28 @@ public class Motion extends JPanel {
 						active.replace(v, true);
 						v.setForeground(Color.BLACK);
 					}
-					// Check if ready to send to Task Queue or Not
-					if(active.values().parallelStream().filter(bool -> bool).toArray().length >= 3) {
-						if(!enabled) {
-							Calculator.addTasks(RUN);
-							enabled = true;
-						}
-					}else{
-						if(enabled) {
-							Calculator.removeTasks(RUN);
-							enabled = false;
-						}
-					}
+					// Try to Launch
+					trySendTask();
 				}
 			});
 		});
+	}
+	
+	/**
+	 * Attempts to see if a task is ready to be sent
+	 */
+	private void trySendTask() {
+		// Check if ready to send to Task Queue or Not
+		if(active.values().parallelStream().filter(bool -> bool).toArray().length >= 3) {
+			if(!enabled) {
+				Calculator.addTasks(RUN);
+				enabled = true;
+			}
+		}else{
+			if(enabled) {
+				Calculator.removeTasks(RUN);
+				enabled = false;
+			}
+		}
 	}
 }
