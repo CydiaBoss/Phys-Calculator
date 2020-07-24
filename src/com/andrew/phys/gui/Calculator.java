@@ -77,12 +77,14 @@ public class Calculator extends JFrame {
 		
 		JButton calBtn = new JButton("Calculate");
 		calBtn.addActionListener(e -> {
+			calBtn.setEnabled(false);
 			TASKS.parallelStream().forEach(r -> 
 				// Executes the task and then removes it from the queue
 				ES.execute(r)
 			);
 			// Clear List
 			TASKS.clear();
+			calBtn.setEnabled(true);
 		}); 
 		panel.add(calBtn, BorderLayout.CENTER);
 		

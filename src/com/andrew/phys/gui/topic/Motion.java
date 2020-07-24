@@ -52,7 +52,7 @@ public class Motion extends JPanel {
 		gbc_sLbl.gridy = 0;
 		add(sLbl, gbc_sLbl);
 		
-		JTextField sTxt = new JTextField();
+		JTextField sTxt = new JTextField("");
 		suvat.put("s", sTxt);
 		sTxt.setName("s");
 		GridBagConstraints gbc_sTxt = new GridBagConstraints();
@@ -72,7 +72,7 @@ public class Motion extends JPanel {
 		gbc_uLbl.gridy = 1;
 		add(uLbl, gbc_uLbl);
 		
-		JTextField uTxt = new JTextField();
+		JTextField uTxt = new JTextField("");
 		suvat.put("u", uTxt);
 		uTxt.setName("u");
 		GridBagConstraints gbc_uTxt = new GridBagConstraints();
@@ -92,7 +92,7 @@ public class Motion extends JPanel {
 		gbc_vLbl.gridy = 2;
 		add(vLbl, gbc_vLbl);
 		
-		JTextField vTxt = new JTextField();
+		JTextField vTxt = new JTextField("");
 		suvat.put("v", vTxt);
 		vTxt.setName("v");
 		GridBagConstraints gbc_vTxt = new GridBagConstraints();
@@ -112,7 +112,7 @@ public class Motion extends JPanel {
 		gbc_aLbl.gridy = 3;
 		add(aLbl, gbc_aLbl);
 		
-		JTextField aTxt = new JTextField();
+		JTextField aTxt = new JTextField("");
 		suvat.put("a", aTxt);
 		aTxt.setName("a");
 		GridBagConstraints gbc_aTxt = new GridBagConstraints();
@@ -132,7 +132,7 @@ public class Motion extends JPanel {
 		gbc_tLbl.gridy = 4;
 		add(tLbl, gbc_tLbl);
 		
-		JTextField tTxt = new JTextField();
+		JTextField tTxt = new JTextField("");
 		suvat.put("t", tTxt);
 		tTxt.setName("t");
 		tTxt.setColumns(10);
@@ -147,6 +147,7 @@ public class Motion extends JPanel {
 
 	/**
 	 * Main Runnable of the Motion Class
+	 * TODO FIND WHY NO TRUE
 	 */
 	private final Runnable RUN = () -> {
 		// Compile a List of Variables
@@ -160,28 +161,69 @@ public class Motion extends JPanel {
 				}
 		});
 		// Start Calculation
-		// Cal. s
-		if(!actVars.containsKey("s"))
-			suvat.get("s").setText(MotionEqu.s(actVars).toString());
-		// Cal. u
-		if(!actVars.containsKey("u"))
-			suvat.get("u").setText(MotionEqu.u(actVars).toString());
-		// Cal. v
-		if(!actVars.containsKey("v"))
-			suvat.get("v").setText(MotionEqu.v(actVars).toString());
-		// Cal. a
-		if(!actVars.containsKey("a"))
-			suvat.get("a").setText(MotionEqu.a(actVars).toString());
-		// Cal. t
-		if(!actVars.containsKey("t"))
-			suvat.get("t").setText(MotionEqu.t(actVars).toString());
+		do {
+			// Cal. s
+			if(!actVars.containsKey("s")) {
+				// Calculate
+				Variable ans = MotionEqu.s(actVars);
+				// Possible, Add to List
+				if(ans != null) {
+					actVars.put("s", ans);
+					suvat.get("s").setText(ans.toString());
+				}
+				// If Not, Return Later
+			}
+			// Cal. u
+			if(!actVars.containsKey("u")) {
+				// Calculate
+				Variable ans = MotionEqu.u(actVars);
+				// Possible, Add to List
+				if(ans != null) {
+					actVars.put("u", ans);
+					suvat.get("u").setText(ans.toString());
+				}
+				// If Not, Return Later
+			}
+			// Cal. v
+			if(!actVars.containsKey("v")) {
+				// Calculate
+				Variable ans = MotionEqu.v(actVars);
+				// Possible, Add to List
+				if(ans != null) {
+					actVars.put("v", ans);
+					suvat.get("v").setText(ans.toString());
+				}
+				// If Not, Return Later
+			}
+			// Cal. a
+			if(!actVars.containsKey("a")) {
+				// Calculate
+				Variable ans = MotionEqu.a(actVars);
+				// Possible, Add to List
+				if(ans != null) {
+					actVars.put("a", ans);
+					suvat.get("a").setText(ans.toString());
+				}
+				// If Not, Return Later
+			}
+			// Cal. t
+			if(!actVars.containsKey("t")) {
+				// Calculate
+				Variable ans = MotionEqu.u(actVars);
+				// Possible, Add to List
+				if(ans != null) {
+					actVars.put("t", ans);
+					suvat.get("t").setText(ans.toString());
+				}
+				// If Not, Return Later
+			}
+		}while(actVars.size() < 5);
 		// Reset Enabled
 		enabled = false;
 	};
 	
 	/**
 	 * Adds listeners to all text fields
-	 * TODO FIx random nulls
 	 */
 	private void suvatListener() {
 		// Start Calculating Once Something is Changed
@@ -212,8 +254,6 @@ public class Motion extends JPanel {
 					update();
 				}
 				
-				private boolean illegal = false;
-				
 				/**
 				 * Updates all text fields with the calculated values
 				 */
@@ -225,18 +265,8 @@ public class Motion extends JPanel {
 						trySendTask();
 						return;
 					}
-					// Check for Illegal Characters
-					illegal = false;
-					v.getText().chars().parallel().forEach(c -> {
-						// Pass if accepted characters
-						if(c == 'E' || c == 'e' || c == '.' || c == '^' || c== '-')
-							return;
-						// Stop if not a digit (illegal)
-						if(!Character.isDigit(c))
-							illegal = true;
-					});
-					// Update
-					if(illegal) {
+					// Ensures Format
+					if(!v.getText().matches("([-+])?\\d+(\\.\\d+)?([eE]([-+])?\\d+(\\.\\d+)?)?")) {
 						active.replace(v, false);
 						v.setForeground(Color.RED);
 						return;
