@@ -3,6 +3,7 @@ package com.andrew.phys.gui;
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import java.awt.Toolkit;
@@ -15,6 +16,8 @@ import javax.swing.JTabbedPane;
 import com.andrew.phys.gui.topic.Motion;
 import javax.swing.JPanel;
 import java.awt.Component;
+import java.awt.Dialog.ModalExclusionType;
+
 import javax.swing.Box;
 import javax.swing.JButton;
 
@@ -54,6 +57,7 @@ public class Calculator extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
+		setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
 		setSize(450, 300);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
@@ -78,12 +82,16 @@ public class Calculator extends JFrame {
 		JButton calBtn = new JButton("Calculate");
 		calBtn.addActionListener(e -> {
 			calBtn.setEnabled(false);
-			TASKS.parallelStream().forEach(r -> 
-				// Executes the task and then removes it from the queue
-				ES.execute(r)
-			);
-			// Clear List
-			TASKS.clear();
+			if(TASKS.size() != 0) {
+				TASKS.parallelStream().forEach(r -> 
+					// Executes the task and then removes it from the queue
+					ES.execute(r)
+				);
+				// Clear List
+				TASKS.clear();
+			}else
+				JOptionPane.showMessageDialog(this, "Not enough input to calculate", "Error", 
+						JOptionPane.WARNING_MESSAGE);
 			calBtn.setEnabled(true);
 		}); 
 		panel.add(calBtn, BorderLayout.CENTER);

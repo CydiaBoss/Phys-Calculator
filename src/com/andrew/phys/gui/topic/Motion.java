@@ -154,11 +154,7 @@ public class Motion extends JPanel {
 		HashMap<String, Variable> actVars = new HashMap<>();
 		active.forEach((v, b) -> {
 			if(b)
-				try {
-					actVars.put(v.getName(), new Variable(v.getName(), v.getText().trim()));
-				}catch(NumberFormatException e) {
-					System.out.println(v.getName() + " Caused a Problem");
-				}
+				actVars.put(v.getName(), new Variable(v.getName(), v.getText().trim()));
 		});
 		// Start Calculation
 		do {
@@ -258,7 +254,6 @@ public class Motion extends JPanel {
 				 * Updates all text fields with the calculated values
 				 */
 				private void update() {
-					System.out.println(v.getName() + " contains: <" + v.getText() + ">");
 					// Reset if blank
 					if(v.getText().trim().length() == 0) {
 						active.replace(v, false);

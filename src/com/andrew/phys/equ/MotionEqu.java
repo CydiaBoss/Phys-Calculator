@@ -41,7 +41,7 @@ public class MotionEqu {
 				.divide(Variable.valueOf(2.0).multiply(vars.get("a")))
 			);
 		// Use s = (v + u)t/2
-		else if(!vars.containsKey("a"))
+		else if(!vars.containsKey("a") || vars.size() >= 4)
 			return new Variable("s", 
 				vars.get("v")
 				.add(vars.get("u"))
@@ -87,7 +87,7 @@ public class MotionEqu {
 				.sqrt()
 			);
 		// Use u = 2s/t - v
-		else if(!vars.containsKey("a"))
+		else if(!vars.containsKey("a") || vars.size() >= 4)
 			return new Variable("u",
 				vars.get("s")
 				.multiply(Variable.valueOf(2.0))
@@ -125,7 +125,7 @@ public class MotionEqu {
 				.add(vars.get("a").multiply(vars.get("s")).multiply(Variable.valueOf(2.0)))
 			).sqrt();
 		// Use v = 2s/t - u
-		else if(!vars.containsKey("a"))
+		else if(!vars.containsKey("a") || vars.size() >= 4)
 			return new Variable ("v", 
 				vars.get("s")
 				.multiply(Variable.valueOf(2.0))
@@ -165,7 +165,7 @@ public class MotionEqu {
 				.divide(Variable.valueOf(0.5).multiply(vars.get("t").pow(2)))
 			);
 		// Use a = (v^2 - u^2)/2s
-		else if(!vars.containsKey("t"))
+		else if(!vars.containsKey("t") || vars.size() >= 4)
 			return new Variable("a", 
 				vars.get("v").pow(2)
 				.subtract(vars.get("u").pow(2))
@@ -197,7 +197,7 @@ public class MotionEqu {
 				.divide(vars.get("a"))
 			);
 		// Use t = 2s/(v + u)
-		else if(!vars.containsKey("a"))
+		else if(!vars.containsKey("a") || vars.size() >= 4)
 			return new Variable("t",
 				vars.get("s")
 				.multiply(Variable.valueOf(2.0))
