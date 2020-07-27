@@ -19,5 +19,4 @@ public class Constant {
 	 * Default Scale
 	 */
 	public static final int SCALE = 3;
-	
 }

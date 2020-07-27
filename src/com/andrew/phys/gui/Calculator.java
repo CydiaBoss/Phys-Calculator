@@ -90,7 +90,7 @@ public class Calculator extends JFrame {
 				// Clear List
 				TASKS.clear();
 			}else
-				JOptionPane.showMessageDialog(this, "Not enough input to calculate", "Error", 
+				JOptionPane.showMessageDialog(this, "Not enough input to calculate.", "Error", 
 						JOptionPane.WARNING_MESSAGE);
 			calBtn.setEnabled(true);
 		}); 
