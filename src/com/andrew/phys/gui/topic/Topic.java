@@ -14,7 +14,30 @@ import javax.swing.JPanel;
 public class Topic extends JPanel{
 	
 	private static final long serialVersionUID = -5465685227740661780L;
-
+	
+	/**
+	 * Creates a basic Topic Panel
+	 */
+	public Topic() {
+		
+		/* Outer Panel */
+		
+		setLayout(new BorderLayout(0, 0));
+		
+		Component horizontalStrut = Box.createHorizontalStrut(20);
+		add(horizontalStrut, BorderLayout.WEST);
+		
+		Component verticalStrut = Box.createVerticalStrut(20);
+		add(verticalStrut, BorderLayout.NORTH);
+		
+		Component verticalStrut_1 = Box.createVerticalStrut(20);
+		add(verticalStrut_1, BorderLayout.SOUTH);
+		
+		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
+		add(horizontalStrut_1, BorderLayout.EAST);
+		
+	}
+	
 	/**
 	 * Meter
 	 */
@@ -61,36 +84,6 @@ public class Topic extends JPanel{
 	 */
 	protected String POW(String exp) {
 		return "<sup>" + exp + "</sup>";
-	}
-	
-	/**
-	 * Generates a general {@link JPanel} for usage
-	 * 
-	 * @return
-	 * The JPanel
-	 */
-	protected JPanel genPanel() {
-		
-		/* Outer Panel */
-		
-		JPanel panel = new JPanel();
-		
-		panel.setLayout(new BorderLayout(0, 0));
-		
-		Component horizontalStrut = Box.createHorizontalStrut(20);
-		panel.add(horizontalStrut, BorderLayout.WEST);
-		
-		Component verticalStrut = Box.createVerticalStrut(20);
-		panel.add(verticalStrut, BorderLayout.NORTH);
-		
-		Component verticalStrut_1 = Box.createVerticalStrut(20);
-		panel.add(verticalStrut_1, BorderLayout.SOUTH);
-		
-		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
-		panel.add(horizontalStrut_1, BorderLayout.EAST);
-		
-		// Return
-		return panel;
 	}
 	
 	/**

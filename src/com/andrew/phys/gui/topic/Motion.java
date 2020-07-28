@@ -18,14 +18,14 @@ import com.andrew.phys.Constant;
 import com.andrew.phys.equ.MotionEqu;
 import com.andrew.phys.equ.Variable;
 import com.andrew.phys.gui.Calculator;
-import java.awt.Component;
-import javax.swing.Box;
-import java.awt.Font;
 import javax.swing.SwingConstants;
 
 public class Motion extends Topic{
 	
 	private static final long serialVersionUID = 3726445637317781920L;
+	
+	/* Unit */
+	private final String FORCE = "N";
 	
 	// Toggle
 	private boolean enabled = false;
@@ -35,27 +35,14 @@ public class Motion extends Topic{
 	/*-SUVAT-*/
 	private HashMap<String, JTextField> suvat = new HashMap<>();
 	private Hashtable<JTextField, Boolean> active = new Hashtable<>();
+	private JTextField fTxt;
+	private JTextField fcTxt;
+	private JTextField rFTxt;
 
 	/**
 	 * Create the panel.
 	 */
 	public Motion() {
-		
-		/* Outer Panel */
-
-		setLayout(new BorderLayout(0, 0));
-		
-		Component horizontalStrut = Box.createHorizontalStrut(20);
-		add(horizontalStrut, BorderLayout.WEST);
-		
-		Component verticalStrut = Box.createVerticalStrut(20);
-		add(verticalStrut, BorderLayout.NORTH);
-		
-		Component verticalStrut_1 = Box.createVerticalStrut(20);
-		add(verticalStrut_1, BorderLayout.SOUTH);
-		
-		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
-		add(horizontalStrut_1, BorderLayout.EAST);
 		
 		/* Inner Panel */
 		
@@ -63,9 +50,9 @@ public class Motion extends Topic{
 		add(inner, BorderLayout.CENTER);
 		
 		GridBagLayout gbl_motionPnl = new GridBagLayout();
-		gbl_motionPnl.columnWidths = new int[]{0, 0, 0, 0};
+		gbl_motionPnl.columnWidths = new int[]{0, 0, 0, 10, 0, 0, 0, 0};
 		gbl_motionPnl.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
-		gbl_motionPnl.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_motionPnl.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_motionPnl.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		inner.setLayout(gbl_motionPnl);
 		
@@ -93,10 +80,10 @@ public class Motion extends Topic{
 		
 		JLabel sUnit = new JLabel("<html>" + M + "</html>");
 		sUnit.setHorizontalAlignment(SwingConstants.LEFT);
-		sUnit.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		sUnit.setFont(Constant.DEF_FONT);
 		GridBagConstraints gbc_sUnit = new GridBagConstraints();
 		gbc_sUnit.anchor = GridBagConstraints.WEST;
-		gbc_sUnit.insets = new Insets(0, 0, 5, 0);
+		gbc_sUnit.insets = new Insets(0, 0, 5, 5);
 		gbc_sUnit.gridx = 2;
 		gbc_sUnit.gridy = 0;
 		inner.add(sUnit, gbc_sUnit);
@@ -125,10 +112,10 @@ public class Motion extends Topic{
 		
 		JLabel uUnit = new JLabel("<html>" + M + S + POW("-1") + "</html>");
 		uUnit.setHorizontalAlignment(SwingConstants.LEFT);
-		uUnit.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		uUnit.setFont(Constant.DEF_FONT);
 		GridBagConstraints gbc_uUnit = new GridBagConstraints();
 		gbc_uUnit.anchor = GridBagConstraints.WEST;
-		gbc_uUnit.insets = new Insets(0, 0, 5, 0);
+		gbc_uUnit.insets = new Insets(0, 0, 5, 5);
 		gbc_uUnit.gridx = 2;
 		gbc_uUnit.gridy = 1;
 		inner.add(uUnit, gbc_uUnit);
@@ -157,13 +144,15 @@ public class Motion extends Topic{
 		
 		JLabel vUnit = new JLabel("<html>" + M + S + POW("-1") + "</html>");
 		vUnit.setHorizontalAlignment(SwingConstants.LEFT);
-		vUnit.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		vUnit.setFont(Constant.DEF_FONT);
 		GridBagConstraints gbc_vUnit = new GridBagConstraints();
 		gbc_vUnit.anchor = GridBagConstraints.WEST;
-		gbc_vUnit.insets = new Insets(0, 0, 5, 0);
+		gbc_vUnit.insets = new Insets(0, 0, 5, 5);
 		gbc_vUnit.gridx = 2;
 		gbc_vUnit.gridy = 2;
 		inner.add(vUnit, gbc_vUnit);
+		
+		
 		
 		// Acceleration
 		
@@ -189,10 +178,10 @@ public class Motion extends Topic{
 		
 		JLabel aUnit = new JLabel("<html>" + M + S + POW("-2") + "</html>");
 		aUnit.setHorizontalAlignment(SwingConstants.LEFT);
-		aUnit.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		aUnit.setFont(Constant.DEF_FONT);
 		GridBagConstraints gbc_aUnit = new GridBagConstraints();
 		gbc_aUnit.anchor = GridBagConstraints.WEST;
-		gbc_aUnit.insets = new Insets(0, 0, 5, 0);
+		gbc_aUnit.insets = new Insets(0, 0, 5, 5);
 		gbc_aUnit.gridx = 2;
 		gbc_aUnit.gridy = 3;
 		inner.add(aUnit, gbc_aUnit);
@@ -221,12 +210,92 @@ public class Motion extends Topic{
 		
 		JLabel tUnit = new JLabel("<html>" + S + "</html>");
 		tUnit.setHorizontalAlignment(SwingConstants.LEFT);
-		tUnit.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		tUnit.setFont(Constant.DEF_FONT);
 		GridBagConstraints gbc_tUnit = new GridBagConstraints();
+		gbc_tUnit.insets = new Insets(0, 0, 0, 5);
 		gbc_tUnit.anchor = GridBagConstraints.WEST;
 		gbc_tUnit.gridx = 2;
 		gbc_tUnit.gridy = 4;
 		inner.add(tUnit, gbc_tUnit);
+		
+		// Force
+		
+		JLabel fLbl = new JLabel("Force:");
+		fLbl.setHorizontalAlignment(SwingConstants.RIGHT);
+		fLbl.setFont(Constant.DEF_FONT);
+		GridBagConstraints gbc_fLbl = new GridBagConstraints();
+		gbc_fLbl.anchor = GridBagConstraints.EAST;
+		gbc_fLbl.insets = new Insets(0, 0, 5, 5);
+		gbc_fLbl.gridx = 4;
+		gbc_fLbl.gridy = 0;
+		inner.add(fLbl, gbc_fLbl);
+		
+		fTxt = new JTextField();
+		GridBagConstraints gbc_fTxt = new GridBagConstraints();
+		gbc_fTxt.anchor = GridBagConstraints.WEST;
+		gbc_fTxt.insets = new Insets(0, 0, 5, 5);
+		gbc_fTxt.gridx = 5;
+		gbc_fTxt.gridy = 0;
+		inner.add(fTxt, gbc_fTxt);
+		fTxt.setColumns(10);
+		
+		JLabel fUnit = new JLabel("<html>" + FORCE + " (" + KG + M + S + POW("-2") + ")</html>");
+		fUnit.setFont(Constant.DEF_FONT);
+		GridBagConstraints gbc_fUnit = new GridBagConstraints();
+		gbc_fUnit.insets = new Insets(0, 0, 5, 0);
+		gbc_fUnit.gridx = 6;
+		gbc_fUnit.gridy = 0;
+		inner.add(fUnit, gbc_fUnit);
+		
+		// Coefficient Of Friction
+		
+		JLabel fcLbl = new JLabel("Friction Coeff:");
+		fcLbl.setHorizontalAlignment(SwingConstants.RIGHT);
+		fcLbl.setFont(Constant.DEF_FONT);
+		GridBagConstraints gbc_fcLbl = new GridBagConstraints();
+		gbc_fcLbl.anchor = GridBagConstraints.EAST;
+		gbc_fcLbl.insets = new Insets(0, 0, 5, 5);
+		gbc_fcLbl.gridx = 4;
+		gbc_fcLbl.gridy = 1;
+		inner.add(fcLbl, gbc_fcLbl);
+		
+		fcTxt = new JTextField();
+		GridBagConstraints gbc_fcTxt = new GridBagConstraints();
+		gbc_fcTxt.insets = new Insets(0, 0, 5, 5);
+		gbc_fcTxt.fill = GridBagConstraints.HORIZONTAL;
+		gbc_fcTxt.gridx = 5;
+		gbc_fcTxt.gridy = 1;
+		inner.add(fcTxt, gbc_fcTxt);
+		fcTxt.setColumns(10);
+		
+		// Normal Force
+		
+		JLabel rFLbl = new JLabel("Norm. Force:");
+		rFLbl.setHorizontalAlignment(SwingConstants.RIGHT);
+		rFLbl.setFont(Constant.DEF_FONT);
+		GridBagConstraints gbc_rFLbl = new GridBagConstraints();
+		gbc_rFLbl.anchor = GridBagConstraints.EAST;
+		gbc_rFLbl.insets = new Insets(0, 0, 5, 5);
+		gbc_rFLbl.gridx = 4;
+		gbc_rFLbl.gridy = 2;
+		inner.add(rFLbl, gbc_rFLbl);
+		
+		rFTxt = new JTextField();
+		GridBagConstraints gbc_rFTxt = new GridBagConstraints();
+		gbc_rFTxt.insets = new Insets(0, 0, 5, 5);
+		gbc_rFTxt.fill = GridBagConstraints.HORIZONTAL;
+		gbc_rFTxt.gridx = 5;
+		gbc_rFTxt.gridy = 2;
+		inner.add(rFTxt, gbc_rFTxt);
+		rFTxt.setColumns(10);
+		
+		JLabel rFUnit = new JLabel("<html>" + FORCE + " (" + KG + M + S + POW("-2") + ")</html>");
+		rFUnit.setFont(Constant.DEF_FONT);
+		GridBagConstraints gbc_rFUnit = new GridBagConstraints();
+		gbc_rFUnit.insets = new Insets(0, 0, 5, 0);
+		gbc_rFUnit.gridx = 6;
+		gbc_rFUnit.gridy = 2;
+		inner.add(rFUnit, gbc_rFUnit);
 		
 		// Install the Listeners
 		

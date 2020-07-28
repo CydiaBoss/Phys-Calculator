@@ -58,7 +58,7 @@ public class Calculator extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setModalExclusionType(ModalExclusionType.NO_EXCLUDE);
-		setSize(450, 300);
+		setSize(500, 300);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		// Button Area
