@@ -24,20 +24,12 @@ public class Motion extends Topic{
 	
 	private static final long serialVersionUID = 3726445637317781920L;
 	
-	/* Unit */
-	private final String FORCE = "N";
-	
-	// Toggle
+	/* Toggle */
 	private boolean enabled = false;
 	
-	/* Text Fields */
-	
-	/*-SUVAT-*/
-	private HashMap<String, JTextField> suvat = new HashMap<>();
+	/* Values */
+	private HashMap<String, JTextField> values = new HashMap<>();
 	private Hashtable<JTextField, Boolean> active = new Hashtable<>();
-	private JTextField fTxt;
-	private JTextField fcTxt;
-	private JTextField rFTxt;
 
 	/**
 	 * Create the panel.
@@ -56,6 +48,8 @@ public class Motion extends Topic{
 		gbl_motionPnl.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		inner.setLayout(gbl_motionPnl);
 		
+		/* 2.1 */
+		
 		// Displacement
 		
 		JLabel sLbl = new JLabel("Displacement:");
@@ -68,7 +62,7 @@ public class Motion extends Topic{
 		inner.add(sLbl, gbc_sLbl);
 		
 		JTextField sTxt = new JTextField("");
-		suvat.put("s", sTxt);
+		values.put("s", sTxt);
 		sTxt.setName("s");
 		GridBagConstraints gbc_sTxt = new GridBagConstraints();
 		gbc_sTxt.insets = new Insets(0, 0, 5, 5);
@@ -100,7 +94,7 @@ public class Motion extends Topic{
 		inner.add(uLbl, gbc_uLbl);
 		
 		JTextField uTxt = new JTextField("");
-		suvat.put("u", uTxt);
+		values.put("u", uTxt);
 		uTxt.setName("u");
 		GridBagConstraints gbc_uTxt = new GridBagConstraints();
 		gbc_uTxt.insets = new Insets(0, 0, 5, 5);
@@ -132,7 +126,7 @@ public class Motion extends Topic{
 		inner.add(vLbl, gbc_vLbl);
 		
 		JTextField vTxt = new JTextField("");
-		suvat.put("v", vTxt);
+		values.put("v", vTxt);
 		vTxt.setName("v");
 		GridBagConstraints gbc_vTxt = new GridBagConstraints();
 		gbc_vTxt.anchor = GridBagConstraints.WEST;
@@ -152,8 +146,6 @@ public class Motion extends Topic{
 		gbc_vUnit.gridy = 2;
 		inner.add(vUnit, gbc_vUnit);
 		
-		
-		
 		// Acceleration
 		
 		JLabel aLbl = new JLabel("Acceleration:");
@@ -166,7 +158,7 @@ public class Motion extends Topic{
 		inner.add(aLbl, gbc_aLbl);
 		
 		JTextField aTxt = new JTextField("");
-		suvat.put("a", aTxt);
+		values.put("a", aTxt);
 		aTxt.setName("a");
 		GridBagConstraints gbc_aTxt = new GridBagConstraints();
 		gbc_aTxt.insets = new Insets(0, 0, 5, 5);
@@ -198,7 +190,7 @@ public class Motion extends Topic{
 		inner.add(tLbl, gbc_tLbl);
 		
 		JTextField tTxt = new JTextField("");
-		suvat.put("t", tTxt);
+		values.put("t", tTxt);
 		tTxt.setName("t");
 		tTxt.setColumns(10);
 		GridBagConstraints gbc_tTxt = new GridBagConstraints();
@@ -218,6 +210,8 @@ public class Motion extends Topic{
 		gbc_tUnit.gridy = 4;
 		inner.add(tUnit, gbc_tUnit);
 		
+		/* 2.2 */
+		
 		// Force
 		
 		JLabel fLbl = new JLabel("Force:");
@@ -230,7 +224,9 @@ public class Motion extends Topic{
 		gbc_fLbl.gridy = 0;
 		inner.add(fLbl, gbc_fLbl);
 		
-		fTxt = new JTextField();
+		JTextField fTxt = new JTextField("");
+		values.put("f", fTxt);
+		fTxt.setName("f");
 		GridBagConstraints gbc_fTxt = new GridBagConstraints();
 		gbc_fTxt.anchor = GridBagConstraints.WEST;
 		gbc_fTxt.insets = new Insets(0, 0, 5, 5);
@@ -259,7 +255,9 @@ public class Motion extends Topic{
 		gbc_fcLbl.gridy = 1;
 		inner.add(fcLbl, gbc_fcLbl);
 		
-		fcTxt = new JTextField();
+		JTextField fcTxt = new JTextField("");
+		values.put("fc", fcTxt);
+		fcTxt.setName("fc");
 		GridBagConstraints gbc_fcTxt = new GridBagConstraints();
 		gbc_fcTxt.insets = new Insets(0, 0, 5, 5);
 		gbc_fcTxt.fill = GridBagConstraints.HORIZONTAL;
@@ -280,7 +278,9 @@ public class Motion extends Topic{
 		gbc_rFLbl.gridy = 2;
 		inner.add(rFLbl, gbc_rFLbl);
 		
-		rFTxt = new JTextField();
+		JTextField rFTxt = new JTextField("");
+		values.put("rF", rFTxt);
+		rFTxt.setName("rF");
 		GridBagConstraints gbc_rFTxt = new GridBagConstraints();
 		gbc_rFTxt.insets = new Insets(0, 0, 5, 5);
 		gbc_rFTxt.fill = GridBagConstraints.HORIZONTAL;
@@ -299,7 +299,7 @@ public class Motion extends Topic{
 		
 		// Install the Listeners
 		
-		suvatListener();
+		valueListener();
 	}
 
 	/**
@@ -309,12 +309,15 @@ public class Motion extends Topic{
 	protected Runnable getRun() { 
 		return () -> {
 			// Compile a List of Variables
+			// TODO Add New Filters
 			HashMap<String, Variable> actVars = new HashMap<>();
 			active.forEach((v, b) -> {
 				if(b)
 					actVars.put(v.getName(), new Variable(v.getName(), v.getText().trim()));
 			});
 			// Start Calculation
+			// 2.1 Calculations
+			// TODO Add 2.2 Calculation
 			do {
 				// Cal. s
 				if(!actVars.containsKey("s")) {
@@ -323,7 +326,7 @@ public class Motion extends Topic{
 					// Possible, Add to List
 					if(ans != null) {
 						actVars.put("s", ans);
-						suvat.get("s").setText(ans.toString());
+						values.get("s").setText(ans.toString());
 					}
 					// If Not, Return Later
 				}
@@ -334,7 +337,7 @@ public class Motion extends Topic{
 					// Possible, Add to List
 					if(ans != null) {
 						actVars.put("u", ans);
-						suvat.get("u").setText(ans.toString());
+						values.get("u").setText(ans.toString());
 					}
 					// If Not, Return Later
 				}
@@ -345,7 +348,7 @@ public class Motion extends Topic{
 					// Possible, Add to List
 					if(ans != null) {
 						actVars.put("v", ans);
-						suvat.get("v").setText(ans.toString());
+						values.get("v").setText(ans.toString());
 					}
 					// If Not, Return Later
 				}
@@ -356,7 +359,7 @@ public class Motion extends Topic{
 					// Possible, Add to List
 					if(ans != null) {
 						actVars.put("a", ans);
-						suvat.get("a").setText(ans.toString());
+						values.get("a").setText(ans.toString());
 					}
 					// If Not, Return Later
 				}
@@ -367,7 +370,7 @@ public class Motion extends Topic{
 					// Possible, Add to List
 					if(ans != null) {
 						actVars.put("t", ans);
-						suvat.get("t").setText(ans.toString());
+						values.get("t").setText(ans.toString());
 					}
 					// If Not, Return Later
 				}
@@ -380,9 +383,9 @@ public class Motion extends Topic{
 	/**
 	 * Adds listeners to all text fields
 	 */
-	private void suvatListener() {
+	private void valueListener() {
 		// Start Calculating Once Something is Changed
-		suvat.forEach((k, v) -> {
+		values.forEach((k, v) -> {
 			// Add to Tracker
 			active.put(v, false);
 			// Add Listener
@@ -441,6 +444,7 @@ public class Motion extends Topic{
 	@Override
 	protected void trySendTask() {
 		// Check if ready to send to Task Queue or Not
+		// TODO Modify to New Standards
 		if(active.values().parallelStream().filter(bool -> bool).toArray().length >= 3) {
 			if(!enabled) {
 				Calculator.addTasks(getRun());

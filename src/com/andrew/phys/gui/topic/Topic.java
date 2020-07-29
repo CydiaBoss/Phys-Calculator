@@ -38,6 +38,8 @@ public class Topic extends JPanel{
 		
 	}
 	
+	/* Basic Unit */
+	
 	/**
 	 * Meter
 	 */
@@ -72,6 +74,10 @@ public class Topic extends JPanel{
 	 * Candela
 	 */
 	protected final String C = "cd";
+	
+	/* Derived Unit */
+	
+	protected final String FORCE = "N";
 	
 	/**
 	 * Exponent
