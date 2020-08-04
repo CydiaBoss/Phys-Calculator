@@ -13,6 +13,8 @@ public class MotionEqu {
 	// No Making Constructs
 	private MotionEqu() {}
 	
+	/* 2.1 */
+	
 	/**
 	 * Calculates the displacement
 	 * 
@@ -148,10 +150,16 @@ public class MotionEqu {
 	 */	
 	public static Variable a(HashMap<String, Variable> vars) {
 		// If less than 3 variables, not able to calculate
-		if(vars.size() < 3)
+		if(vars.size() < 2)
 			return null;
+		// Use a = f/m
+		if(vars.containsKey("f") && vars.containsKey("m"))
+			return new Variable("a",
+				vars.get("f")
+				.divide(vars.get("m"))
+			);
 		// Use a = (v - u)/t
-		if(!vars.containsKey("s"))
+		else if(!vars.containsKey("s"))
 			return new Variable("a", 
 				vars.get("v")
 				.subtract(vars.get("u"))
@@ -221,6 +229,110 @@ public class MotionEqu {
 					 dif = p1.subtract(p2);
 			return (sum.compareTo(dif) == 1)? sum : dif;
 		}
+		// Not Possible
+		else
+			return null;
+	}
+	
+	/* 2.2 */
+	
+	/**
+	 * Calculates the force
+	 * 
+	 * @param vars
+	 * The other variable
+	 * 
+	 * @return
+	 * The force
+	 */	
+	public static Variable f(HashMap<String, Variable> vars) {
+		// If less than 2 variables, not able to calculate
+		if(vars.size() < 2)
+			return null;
+		// Use f = ma
+		if(vars.containsKey("a") && vars.containsKey("m"))
+			return new Variable("f", 
+				vars.get("m")
+				.multiply(vars.get("a"))
+			);
+		// Use f = fc(rf)
+		else if(vars.containsKey("fc") && vars.containsKey("rf"))
+			return new Variable("f",
+				vars.get("fc")
+				.multiply(vars.get("rf"))
+			);
+		// Not Possible
+		else
+			return null;
+	}
+	
+	/**
+	 * Calculates the mass
+	 * 
+	 * @param vars
+	 * The other variable
+	 * 
+	 * @return
+	 * The mass
+	 */	
+	public static Variable m(HashMap<String, Variable> vars) {
+		// If less than 2 variables, not able to calculate
+		if(vars.size() < 2)
+			return null;
+		// Use m = f/a
+		if(vars.containsKey("f") && vars.containsKey("a"))
+			return new Variable("m",
+				vars.get("f")
+				.divide(vars.get("a"))
+			);
+		// Not Possible
+		else
+			return null;
+	}
+	
+	/**
+	 * Calculates the friction coefficient
+	 * 
+	 * @param vars
+	 * The other variable
+	 * 
+	 * @return
+	 * The friction coefficient
+	 */	
+	public static Variable fc(HashMap<String, Variable> vars) {
+		// If less than 2 variables, not able to calculate
+		if(vars.size() < 2)
+			return null;
+		// Use f/(rf)
+		if(vars.containsKey("f") && vars.containsKey("rf"))
+			return new Variable("fc",
+				vars.get("f")
+				.divide(vars.get("rf"))
+			);
+		// Not Possible
+		else
+			return null;
+	}
+	
+	/**
+	 * Calculates the normal force
+	 * 
+	 * @param vars
+	 * The other variable
+	 * 
+	 * @return
+	 * The normal force
+	 */	
+	public static Variable rf(HashMap<String, Variable> vars) {
+		// If less than 2 variables, not able to calculate
+		if(vars.size() < 2)
+			return null;
+		// Use f/(fc)
+		if(vars.containsKey("f") && vars.containsKey("fc"))
+			return new Variable("rf",
+				vars.get("f")
+				.divide(vars.get("fc"))
+			);
 		// Not Possible
 		else
 			return null;
