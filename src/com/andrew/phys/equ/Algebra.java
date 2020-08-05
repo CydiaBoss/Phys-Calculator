@@ -1,5 +1,8 @@
 package com.andrew.phys.equ;
 
+import java.util.HashMap;
+import java.util.regex.Pattern;
+
 /**
  * This class handles the algebra behind
  * @author andre
@@ -135,6 +138,55 @@ public class Algebra {
 		}
 		// Return
 		return fin;
+	}
+	
+	/**
+	 * Calculates a value from an equation using existing variables
+	 * 
+	 * @param equ
+	 * The equation that will equate the solve {@link Variable}
+	 * @param solve
+	 * The {@link Variable}'s name
+	 * @param vars
+	 * The {@link Variable}s
+	 * 
+	 * @return
+	 * The answer
+	 */
+	public static Variable calculate(String equ, String solve, HashMap<String, Variable> vars) {
+		// Look for Brackets
+		if(equ.contains("(")) {
+			// Bracket Level
+			int brackLvl = 0;
+			// Equ within brackets
+			String internal = "";
+			// Read each char
+			for(char c : equ.toCharArray()) {
+				// Previous Lvl
+				int prevLvl = brackLvl;
+				// If ), decrease lvl
+				if(c == ')')
+					brackLvl--;
+				// If in a bracket, record
+				if(brackLvl > 0)
+					internal += c;
+				// If (, increase lvl
+				if(c == '(')
+					brackLvl++;
+				// Calculate Bracket (Detect Brack Completion)
+				if(prevLvl == 1 && brackLvl == 0) {
+					// Calculate and Update
+					equ = equ.replaceFirst(Pattern.quote("(" + internal + ")"), calculate(internal, "INT", vars).toString());
+					// Reset Internal
+					internal = "";
+				}
+			}
+		}
+		// Look for Exponent and Sqrt
+		// Look for Mult and Div
+		// Look for Add and Sub
+		// Return
+		return new Variable(solve, (Variable) null);
 	}
 	
 	public static void main(String... strings) {
