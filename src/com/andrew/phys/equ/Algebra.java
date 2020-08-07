@@ -182,9 +182,52 @@ public class Algebra {
 				}
 			}
 		}
-		// Look for Exponent and Sqrt
-		// Look for Mult and Div
-		// Look for Add and Sub
+		// Order of Operation
+		for(String op : "^√*/+-".split("")) {
+			// Look for the Operation
+			if(equ.contains(op)) {
+				// Divide the equ at the operation
+				String[] spEqu = equ.split(Pattern.quote(op));
+				// Detection
+				for(int i = 0; i < spEqu.length - 1; i++) {
+					// Array to hold values
+					HashMap<String, Variable> values = new HashMap<>();
+					// Look for num/var at the end of cur term
+					char[] firstTerm = spEqu[i].toCharArray();
+					String firstVal = "";
+					for(int k = firstTerm.length - 1; k >= 0 && (Character.isLetterOrDigit(firstTerm[k]) || firstTerm[k] == '.'); k--)
+						firstVal += firstTerm[k];
+					values.put(firstVal, null);
+					// Look for num/var at the beginning of next term
+					char[] secTerm = spEqu[i + 1].toCharArray();
+					String secVal = "";
+					for(int k = 0; k < secTerm.length && (Character.isLetterOrDigit(secTerm[k]) || secTerm[k] == '.'); k++)
+						secVal += secTerm[k];
+					values.put(secVal, null);
+					// Get Variables
+					for(String term : values.keySet()) {
+						// Convert Number to Variable
+						if(term.matches("\\d+(\\.\\d+)?"))
+							values.replace(term, Variable.valueOf(Double.parseDouble(term)));
+						// Get Existing 
+						else if(term.matches("[A-Za-z]+"))
+							values.replace(term, vars.get(term));
+						else
+							throw new IllegalArgumentException("Illegal Term '" + term + "' Exists");
+					}
+					// Operate
+					if(op.equals("^"))
+						// Will Force Int Conversion
+						// TODO Install Decimal Power Support
+						values.replace(firstVal, values.get(firstVal).pow(values.get(secVal).intValue()));
+//					else if(op.equals("√"))
+//					else if(op.equals("*"))
+//					else if(op.equals("/"))
+//					else if(op.equals("+"))
+//					else if(op.equals("-"))
+				}
+			}
+		}
 		// Return
 		return new Variable(solve, (Variable) null);
 	}
