@@ -183,6 +183,7 @@ public class Algebra {
 			}
 		}
 		// Order of Operation
+		// TODO Must Fix Loop System as Equation Changes do not affect the array
 		for(String op : "^√*/+-".split("")) {
 			// Look for the Operation
 			if(equ.contains(op)) {
@@ -197,6 +198,8 @@ public class Algebra {
 					String firstVal = "";
 					for(int k = firstTerm.length - 1; k >= 0 && (Character.isLetterOrDigit(firstTerm[k]) || firstTerm[k] == '.'); k--)
 						firstVal += firstTerm[k];
+					// Must Invert String as Built Backwards
+					firstVal = new StringBuilder(firstVal).reverse().toString();
 					values.put(firstVal, null);
 					// Look for num/var at the beginning of next term
 					char[] secTerm = spEqu[i + 1].toCharArray();
@@ -215,25 +218,47 @@ public class Algebra {
 						else
 							throw new IllegalArgumentException("Illegal Term '" + term + "' Exists");
 					}
+					System.out.println(firstVal + " > " + values.get(firstVal) + "\n" +
+									   secVal + " > " + values.get(secVal));
 					// Operate
-					if(op.equals("^"))
+					if(op.equals("^")) 
 						// Will Force Int Conversion
 						// TODO Install Decimal Power Support
 						values.replace(firstVal, values.get(firstVal).pow(values.get(secVal).intValue()));
-//					else if(op.equals("√"))
-//					else if(op.equals("*"))
-//					else if(op.equals("/"))
-//					else if(op.equals("+"))
-//					else if(op.equals("-"))
+					else if(op.equals("√"))
+						// Sqrts
+						// TODO Add Other Root Support
+						values.replace(firstVal, values.get(secVal).sqrt());
+					else if(op.equals("*"))
+						// Multiplies
+						values.replace(firstVal, values.get(firstVal).multiply(values.get(secVal)));
+					else if(op.equals("/"))
+						// Divides
+						values.replace(firstVal, values.get(firstVal).divide(values.get(secVal)));
+					else if(op.equals("+"))
+						// Adds
+						values.replace(firstVal, values.get(firstVal).add(values.get(secVal)));
+					else if(op.equals("-"))
+						// Subtracts
+						// TODO Do something about negative numbers at the beginning
+						values.replace(firstVal, values.get(firstVal).subtract(values.get(secVal)));
+					// Update/Replace Original Equation
+					System.out.print(equ + " >> " + firstVal + op + secVal + " >> ");
+					equ = equ.replaceAll(Pattern.quote(firstVal + op + secVal), values.get(firstVal).toString());
+					System.out.println(equ);
 				}
 			}
 		}
 		// Return
-		return new Variable(solve, (Variable) null);
+		return new Variable(solve, equ);
 	}
 	
 	public static void main(String... strings) {
-		System.out.println(rearrange("s=u*t+0.5*a*t^2", "a"));
+		HashMap<String, Variable> vars = new HashMap<>();
+		vars.put("u", new Variable("u", 1.0));
+		vars.put("t", new Variable("t", 2.0));
+		vars.put("a", new Variable("a", 4.0));
+		System.out.println(calculate("u*t+0.5*a*t^2", "s", vars).toString());
 	}
 	
 }
